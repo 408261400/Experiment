@@ -38,6 +38,23 @@ stop.addEventListener('click', () => {
   }
 })
 </script>
+
+<script>
+	// 開啟視訊鏡頭，瀏覽器會跳詢問視窗
+navigator.mediaDevices.getUserMedia({video: true}).then(function(stream){
+  stream_obj = stream;         // 將串流物件放在 stream_obj 全域變數，方便後面關閉 webcam 時會用到
+  video_el.srcObject = stream; // video 標籤顯示 webcam 畫面
+}).catch(function(error){      // 若無法取得畫面，執行 catch
+  console.log('navigator.MediaDevices.getUserMedia Error: ', error.message, error.name);
+});
+
+// 將所有的 MediaStreamTrack 都關閉
+stream_obj.getTracks().forEach(function(track) {
+  track.stop();
+});
+stream_obj = undefined;    // 回到該變數原來預設(即 undefined)
+video_el.srcObject = null; // 將 video 標籤上的 srcObject 清空
+</script>
 	
   <script src="https://static.parastorage.com/unpkg/core-js-bundle@3.2.1/minified.js" nomodule=""></script>
   <script src="https://static.parastorage.com/unpkg/focus-within-polyfill@5.0.9/dist/focus-within-polyfill.js" nomodule=""></script>
@@ -1080,7 +1097,12 @@ unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+
         <path d="M138.305 10.052v123h-123v-123h123z"/>
     </g>
 </svg>
-</div></div><div id="idske2h1" class="_1Q9if" data-testid="richTextElement"><h3 class="font_6" style="font-size:20px">醫學院</h3></div><div id="comp-kj6um2f7" class="_1Q9if" data-testid="richTextElement"><ul class="font_8" style="font-size:16px">
+</div></div>
+	
+	<video id="my_video" poster="https://alldata.sgp1.digitaloceanspaces.com/images%2Fwebcam_hint.png" playsinline autoplay muted></video>
+	<canvas id="my_canvas"></canvas>
+	
+	<div id="idske2h1" class="_1Q9if" data-testid="richTextElement"><h3 class="font_6" style="font-size:20px">醫學院</h3></div><div id="comp-kj6um2f7" class="_1Q9if" data-testid="richTextElement"><ul class="font_8" style="font-size:16px">
 	<li>
 	<p class="font_8" style="font-size:16px">&nbsp;<a href="http://www.nursing.fju.edu.tw/" target="_blank" rel="noreferrer noopener">護理學系</a></p>
 	</li>
