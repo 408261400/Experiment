@@ -1075,21 +1075,46 @@ unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+
 		<input type="file" capture="user" accept="video/*"/>
 	</li>
 	<li>
-		<video id="my_video" poster="https://alldata.sgp1.digitaloceanspaces.com/images%2Fwebcam_hint.png" playsinline autoplay muted></video>
-		// 開啟視訊鏡頭，瀏覽器會跳詢問視窗
-		navigator.mediaDevices.getUserMedia({video: true}).then(function(stream){
-  		stream_obj = stream;         // 將串流物件放在 stream_obj 全域變數，方便後面關閉 webcam 時會用到
- 	 	video_el.srcObject = stream; // video 標籤顯示 webcam 畫面
-		}).catch(function(error){      // 若無法取得畫面，執行 catch
-  		console.log('navigator.MediaDevices.getUserMedia Error: ', error.message, error.name);
-		});
+		<div>
+ 			<button id="camera">視訊鏡頭</button>
+  			<button id="screen">螢幕畫面</button>
+  			<button id="screenshot">截圖</button>
+  			<button id="screenshot-download">下載截圖</button>
+  			<button id="video-start">開始錄影</button>
+  			<button id="video-download">停止錄影並下載</button>
+  			<button id="recording-start">開始錄音</button>
+  			<button id="recording-download">停止錄音並下載</button>
+  			<button id="stop">停止</button>
+		</div>
+	</li>
+	let cameraStream
+const camera = document.querySelector('#camera')
+const stop = document.querySelector('#stop')
+const video = document.querySelector('#video')
 
-		// 將所有的 MediaStreamTrack 都關閉
-		stream_obj.getTracks().forEach(function(track) {
-  		track.stop();
-		});
-		stream_obj = undefined;    // 回到該變數原來預設(即 undefined)
-		video_el.srcObject = null; // 將 video 標籤上的 srcObject 清空
+const constraints = { audio: true, video: true }
+camera.addEventListener('click', () => {
+  navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+    cameraStream = stream
+    video.srcObject = stream
+    video.play()
+  })
+})
+
+stop.addEventListener('click', () => {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => {
+      track.stop()
+    })
+    cameraStream = null
+  }
+})
+	
+<div>
+  <video id="video"></video>
+  <img id="img">
+  <canvas id="canvas" style="display: none;"></canvas>
+</div>
 	</li>
 </ul></div></div></div></div><div id="comp-kx233i8z" class="_1KV2M"><div data-mesh-id="comp-kx233i8zinlineContent" data-testid="inline-content" class=""><div data-mesh-id="comp-kx233i8zinlineContent-gridContainer" data-testid="mesh-container-content"><div id="comp-kvxz8se6" class=""><div data-testid="svgRoot-comp-kvxz8se6" class="_3bLYT _2OIRR"><svg preserveAspectRatio="none" data-bbox="15.305 10.052 123 123" xmlns="http://www.w3.org/2000/svg" viewBox="15.305 10.052 123 123" role=presentation aria-hidden=true>
     <g>
