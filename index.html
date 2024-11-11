@@ -68,5 +68,22 @@ video_el.srcObject = null})}); // 將 video 標籤上的 srcObject 清空
 	<video id="my_video" poster="https://alldata.sgp1.digitaloceanspaces.com/images%2Fwebcam_hint.png" playsinline autoplay muted></video>
 	<canvas id="my_canvas"></canvas>
 
+	<div>
+ 		<button id="camera">視訊鏡頭</button>
+  		<button id="screen">螢幕畫面</button>
+  		<button id="screenshot">截圖</button>
+  		<button id="screenshot-download">下載截圖</button>
+  		<button id="video-start">開始錄影</button>
+  		<button id="video-download">停止錄影並下載</button>
+  		<button id="recording-start">開始錄音</button>
+  		<button id="recording-download">停止錄音並下載</button>
+  		<button id="stop">停止</button>
+	</div>
+	<div>
+  		<video id="video"></video>
+  		<img id="img">
+  		<canvas id="canvas" style="display: none;"></canvas>
+	</div>
+
 </body>
 </html>
