@@ -10,12 +10,9 @@
   <link rel="icon" sizes="192x192" href="https://www.wix.com/favicon.ico">
   <link rel="shortcut icon" href="https://www.wix.com/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://www.wix.com/favicon.ico" type="image/x-icon"/>
-  <!-- Safari Pinned Tab Icon -->
-  <!-- <link rel="mask-icon" href="https://www.wix.com/favicon.ico"> -->
 
-  <!-- Legacy Polyfills -->
 <script>
-	let cameraStream
+let cameraStream
 const camera = document.querySelector('#camera')
 const stop = document.querySelector('#stop')
 const video = document.querySelector('#video')
@@ -64,4 +61,12 @@ video_el.srcObject = null})}); // 將 video 標籤上的 srcObject 清空
 </script>
 
 </head>
+
+<body class='' >
+	<button type="button" id="camera_open">開啟 webcam</button>
+	<button type="button" id="camera_close">關閉 webcam</button>
+	<video id="my_video" poster="https://alldata.sgp1.digitaloceanspaces.com/images%2Fwebcam_hint.png" playsinline autoplay muted></video>
+	<canvas id="my_canvas"></canvas>
+
+</body>
 </html>
