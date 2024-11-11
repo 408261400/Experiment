@@ -14,6 +14,31 @@
   <!-- <link rel="mask-icon" href="https://www.wix.com/favicon.ico"> -->
 
   <!-- Legacy Polyfills -->
+<script>
+	let cameraStream
+const camera = document.querySelector('#camera')
+const stop = document.querySelector('#stop')
+const video = document.querySelector('#video')
+
+const constraints = { audio: true, video: true }
+camera.addEventListener('click', () => {
+  navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+    cameraStream = stream
+    video.srcObject = stream
+    video.play()
+  })
+})
+
+stop.addEventListener('click', () => {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => {
+      track.stop()
+    })
+    cameraStream = null
+  }
+})
+</script>
+	
   <script src="https://static.parastorage.com/unpkg/core-js-bundle@3.2.1/minified.js" nomodule=""></script>
   <script src="https://static.parastorage.com/unpkg/focus-within-polyfill@5.0.9/dist/focus-within-polyfill.js" nomodule=""></script>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=fetch" nomodule=""></script>
@@ -279,31 +304,6 @@ window.componentsRegistry.runtimeReady = new Promise((resolve) => { window.compo
             });
         }).observe(document.body);
     }
-</script>
-
-<script>
-	let cameraStream
-const camera = document.querySelector('#camera')
-const stop = document.querySelector('#stop')
-const video = document.querySelector('#video')
-
-const constraints = { audio: true, video: true }
-camera.addEventListener('click', () => {
-  navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-    cameraStream = stream
-    video.srcObject = stream
-    video.play()
-  })
-})
-
-stop.addEventListener('click', () => {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => {
-      track.stop()
-    })
-    cameraStream = null
-  }
-})
 </script>
 
 <pages-css id="pages-css"><style id="css_masterPage">
