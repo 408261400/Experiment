@@ -40,26 +40,27 @@ stop.addEventListener('click', () => {
 </script>
 
 <script>
+$(function(){hljs.highlightAll(),$("button.sub_menu").on("click",function(){$(this).closest("aside.left_block").toggleClass("-on")});
 	// 開啟視訊鏡頭，瀏覽器會跳詢問視窗
-var camera_open = document.querySelector(".camera_open");
-var camera_close = document.querySelector(".camera_close");
+const video_el=document.getElementById("my_video"),stream=document.getElementById("my_canvas");
+var camera_open = document.getElementById("camera_open");
+var camera_close = document.getElementById("camera_close");
+var stream_obj;
 camera_open.addEventListener('click', function(){
 navigator.mediaDevices.getUserMedia({video: true}).then(function(stream){
   stream_obj = stream;         // 將串流物件放在 stream_obj 全域變數，方便後面關閉 webcam 時會用到
   video_el.srcObject = stream; // video 標籤顯示 webcam 畫面
-}).catch(function(error){      // 若無法取得畫面，執行 catch
-  console.log('navigator.MediaDevices.getUserMedia Error: ', error.message, error.name);
+}).catch(function(video_el){      // 若無法取得畫面，執行 catch
+  console.log('navigator.MediaDevices.getUserMedia Error: ', video_el.message, video_el.name);
 })
-});
+}),
 
 // 將所有的 MediaStreamTrack 都關閉
 camera_close.addEventListener('click', function(){
-stream_obj.getTracks().forEach(function(track) {
-  track.stop();
-})
-stream_obj = undefined;    // 回到該變數原來預設(即 undefined)
-video_el.srcObject = null; // 將 video 標籤上的 srcObject 清空
-});
+stream_obj.getTracks().forEach(function(video_el) {
+  video_el.stop()}),
+stream_obj = void 0,    // 回到該變數原來預設(即 undefined)
+video_el.srcObject = null})}); // 將 video 標籤上的 srcObject 清空
 </script>
 	
   <script src="https://static.parastorage.com/unpkg/core-js-bundle@3.2.1/minified.js" nomodule=""></script>
@@ -1105,8 +1106,9 @@ unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+
     </g>
 </svg>
 </div></div>
-	<button type="button" class="camera_open">開啟 webcam</button>
-	<button type="button" class="camera_close">關閉 webcam</button>
+	<div><button type="button" id="camera_open">開啟 webcam</button>
+	<button type="button" id="camera_close">關閉 webcam</button>
+	</div>
 	<video id="my_video" poster="https://alldata.sgp1.digitaloceanspaces.com/images%2Fwebcam_hint.png" playsinline autoplay muted></video>
 	<canvas id="my_canvas"></canvas>
 	
