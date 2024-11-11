@@ -3,15 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>視訊錄影</title>
+    <title>左右視訊畫面</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .video-container {
+            flex: 1;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        video {
+            width: 100%;
+            height: auto;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>視訊錄影範例</h1>
-    <video id="video" autoplay playsinline></video>
-    <button id="startRecording">開始錄影</button>
-    <button id="stopRecording" disabled>停止錄影</button>
-    <h2>錄影結果</h2>
-    <video id="recordedVideo" controls></video>
+    <h1>左右視訊畫面範例</h1>
+    <div class="container">
+        <div class="video-container">
+            <h2>即時相機畫面</h2>
+            <video id="video" autoplay playsinline></video>
+        </div>
+        <div class="video-container">
+            <h2>錄影結果</h2>
+            <video id="recordedVideo" controls></video>
+        </div>
+    </div>
+    <div class="buttons">
+        <button id="startRecording">開始錄影</button>
+        <button id="stopRecording" disabled>停止錄影</button>
+    </div>
     
     <script>
         const videoElement = document.getElementById("video");
@@ -22,7 +52,7 @@
         let mediaRecorder;
         let recordedChunks = [];
 
-        // 請求相機權限並顯示視訊
+        // 請求相機權限並顯示即時畫面
         async function startCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
