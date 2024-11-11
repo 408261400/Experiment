@@ -42,6 +42,7 @@ stop.addEventListener('click', () => {
 <script>
 	// 開啟視訊鏡頭，瀏覽器會跳詢問視窗
 var camera_open = document.querySelector(".camera_open");
+var camera_close = document.querySelector(".camera_close");
 camera_open.addEventListener('click', function(){
 navigator.mediaDevices.getUserMedia({video: true}).then(function(stream){
   stream_obj = stream;         // 將串流物件放在 stream_obj 全域變數，方便後面關閉 webcam 時會用到
@@ -52,11 +53,13 @@ navigator.mediaDevices.getUserMedia({video: true}).then(function(stream){
 });
 
 // 將所有的 MediaStreamTrack 都關閉
+camera_close.addEventListener('click', function(){
 stream_obj.getTracks().forEach(function(track) {
   track.stop();
-});
+})
 stream_obj = undefined;    // 回到該變數原來預設(即 undefined)
 video_el.srcObject = null; // 將 video 標籤上的 srcObject 清空
+});
 </script>
 	
   <script src="https://static.parastorage.com/unpkg/core-js-bundle@3.2.1/minified.js" nomodule=""></script>
@@ -1103,6 +1106,7 @@ unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+
 </svg>
 </div></div>
 	<button type="button" class="camera_open">開啟 webcam</button>
+	<button type="button" class="camera_close">關閉 webcam</button>
 	<video id="my_video" poster="https://alldata.sgp1.digitaloceanspaces.com/images%2Fwebcam_hint.png" playsinline autoplay muted></video>
 	<canvas id="my_canvas"></canvas>
 	
