@@ -281,6 +281,31 @@ window.componentsRegistry.runtimeReady = new Promise((resolve) => { window.compo
     }
 </script>
 
+<script>
+	let cameraStream
+const camera = document.querySelector('#camera')
+const stop = document.querySelector('#stop')
+const video = document.querySelector('#video')
+
+const constraints = { audio: true, video: true }
+camera.addEventListener('click', () => {
+  navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+    cameraStream = stream
+    video.srcObject = stream
+    video.play()
+  })
+})
+
+stop.addEventListener('click', () => {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => {
+      track.stop()
+    })
+    cameraStream = null
+  }
+})
+</script>
+
 <pages-css id="pages-css"><style id="css_masterPage">
 	:root{--color_0:255,255,255;--color_27:188,228,133;--color_1:255,255,255;--color_2:0,0,0;--color_3:237,28,36;--color_4:0,136,203;--color_5:255,203,5;--color_6:114,114,114;--color_7:176,176,176;--color_8:255,255,255;--color_28:140,214,36;--color_9:114,114,114;--color_10:176,176,176;--color_11:255,255,255;--color_12:221,221,221;--color_13:160,160,160;--color_14:85,85,85;--color_15:0,0,0;--color_16:234,244,246;--color_17:131,183,230;--color_18:53,121,183;--color_29:93,143,24;--color_19:15,76,133;--color_20:0,48,91;--color_21:183,230,235;--color_22:144,209,216;--color_23:65,183,196;--color_24:43,122,131;--color_25:22,61,65;--color_30:47,71,12;--color_31:184,215,252;--color_32:149,194,250;--color_33:47,137,247;--color_34:31,91,165;--color_35:16,46,82;--font_0:normal normal normal 60px/1.4em raleway,sans-serif;--font_1:normal normal normal 13px/1.4em raleway,sans-serif;--font_2:normal normal normal 42px/1.4em raleway,sans-serif;--font_3:normal normal normal 40px/1.4em raleway,sans-serif;--font_4:normal normal normal 30px/1.4em raleway,sans-serif;--font_5:normal normal normal 22px/1.4em 'noticia text',serif;--font_6:normal normal normal 20px/1.4em 'open sans',sans-serif;--font_7:normal normal normal 18px/1.4em 'open sans',sans-serif;--font_8:normal normal normal 16px/1.4em 'open sans',sans-serif;--font_9:normal normal normal 14px/1.4em 'open sans',sans-serif;--font_10:normal normal normal 12px/1.4em 'open sans',sans-serif;--wix-ads-height:50px;--wix-ads-top-height:50px;--site-width:980px;--above-all-z-index:100000;--portals-z-index:100001;--minViewportSize:320;--color_26:214,241,175;--maxViewportSize:1920}.font_0{font:var(--font_0);color:rgb(var(--color_20));letter-spacing:0em}.font_1{font:var(--font_1);color:rgb(var(--color_2));letter-spacing:0em}.font_2{font:var(--font_2);color:rgb(var(--color_20));letter-spacing:0em}.font_3{font:var(--font_3);color:rgb(var(--color_20));letter-spacing:0em}.font_4{font:var(--font_4);color:rgb(var(--color_20));letter-spacing:0em}.font_5{font:var(--font_5);color:rgb(var(--color_20));letter-spacing:0em}.font_6{font:var(--font_6);color:rgb(var(--color_20));letter-spacing:0em}.font_7{font:var(--font_7);color:rgb(var(--color_35));letter-spacing:0em}.font_8{font:var(--font_8);color:rgb(var(--color_20));letter-spacing:0em}.font_9{font:var(--font_9);color:rgb(var(--color_19));letter-spacing:0em}.font_10{font:var(--font_10);color:rgb(var(--color_15));letter-spacing:0em}.color_0{color:rgb(var(--color_0))}.color_1{color:rgb(var(--color_1))}.color_2{color:rgb(var(--color_2))}.color_3{color:rgb(var(--color_3))}.color_4{color:rgb(var(--color_4))}.color_5{color:rgb(var(--color_5))}.color_6{color:rgb(var(--color_6))}.color_7{color:rgb(var(--color_7))}.color_8{color:rgb(var(--color_8))}.color_9{color:rgb(var(--color_9))}.color_10{color:rgb(var(--color_10))}.color_11{color:rgb(var(--color_11))}.color_12{color:rgb(var(--color_12))}.color_13{color:rgb(var(--color_13))}.color_14{color:rgb(var(--color_14))}.color_15{color:rgb(var(--color_15))}.color_16{color:rgb(var(--color_16))}.color_17{color:rgb(var(--color_17))}.color_18{color:rgb(var(--color_18))}.color_19{color:rgb(var(--color_19))}.color_20{color:rgb(var(--color_20))}.color_21{color:rgb(var(--color_21))}.color_22{color:rgb(var(--color_22))}.color_23{color:rgb(var(--color_23))}.color_24{color:rgb(var(--color_24))}.color_25{color:rgb(var(--color_25))}.color_26{color:rgb(var(--color_26))}.color_27{color:rgb(var(--color_27))}.color_28{color:rgb(var(--color_28))}.color_29{color:rgb(var(--color_29))}.color_30{color:rgb(var(--color_30))}.color_31{color:rgb(var(--color_31))}.color_32{color:rgb(var(--color_32))}.color_33{color:rgb(var(--color_33))}.color_34{color:rgb(var(--color_34))}.color_35{color:rgb(var(--color_35))}.backcolor_0{background-color:rgb(var(--color_0))}.backcolor_1{background-color:rgb(var(--color_1))}.backcolor_2{background-color:rgb(var(--color_2))}.backcolor_3{background-color:rgb(var(--color_3))}.backcolor_4{background-color:rgb(var(--color_4))}.backcolor_5{background-color:rgb(var(--color_5))}.backcolor_6{background-color:rgb(var(--color_6))}.backcolor_7{background-color:rgb(var(--color_7))}.backcolor_8{background-color:rgb(var(--color_8))}.backcolor_9{background-color:rgb(var(--color_9))}.backcolor_10{background-color:rgb(var(--color_10))}.backcolor_11{background-color:rgb(var(--color_11))}.backcolor_12{background-color:rgb(var(--color_12))}.backcolor_13{background-color:rgb(var(--color_13))}.backcolor_14{background-color:rgb(var(--color_14))}.backcolor_15{background-color:rgb(var(--color_15))}.backcolor_16{background-color:rgb(var(--color_16))}.backcolor_17{background-color:rgb(var(--color_17))}.backcolor_18{background-color:rgb(var(--color_18))}.backcolor_19{background-color:rgb(var(--color_19))}.backcolor_20{background-color:rgb(var(--color_20))}.backcolor_21{background-color:rgb(var(--color_21))}.backcolor_22{background-color:rgb(var(--color_22))}.backcolor_23{background-color:rgb(var(--color_23))}.backcolor_24{background-color:rgb(var(--color_24))}.backcolor_25{background-color:rgb(var(--color_25))}.backcolor_26{background-color:rgb(var(--color_26))}.backcolor_27{background-color:rgb(var(--color_27))}.backcolor_28{background-color:rgb(var(--color_28))}.backcolor_29{background-color:rgb(var(--color_29))}.backcolor_30{background-color:rgb(var(--color_30))}.backcolor_31{background-color:rgb(var(--color_31))}.backcolor_32{background-color:rgb(var(--color_32))}.backcolor_33{background-color:rgb(var(--color_33))}.backcolor_34{background-color:rgb(var(--color_34))}.backcolor_35{background-color:rgb(var(--color_35))}#SITE_CONTAINER.focus-ring-active :not(.has-custom-focus):not(.ignore-focus):focus, #SITE_CONTAINER.focus-ring-active :not(.has-custom-focus):not(.ignore-focus):focus ~ .wixSdkShowFocusOnSibling{box-shadow:0 0 0 1px #ffffff, 0 0 0 3px #116dff !important;z-index:1}[data-mesh-id=SITE_HEADERinlineContent]{height:auto;width:100%}[data-mesh-id=SITE_HEADERinlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:auto;grid-template-rows:1fr;grid-template-columns:100%}[data-mesh-id=SITE_HEADERinlineContent-gridContainer] > [id="comp-kj8ccgxo"]{position:relative;margin:23px 0px 31px calc((100% - 980px) * 0.5);left:17px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start}[data-mesh-id=SITE_HEADERinlineContent-gridContainer] > [id="comp-ifs9egkl"]{position:relative;margin:29px 0px 37px calc((100% - 980px) * 0.5);left:57px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start}[data-mesh-id=SITE_HEADERinlineContent-gridContainer] > [id="DrpDwnMn0-jgk"]{position:relative;margin:23px 0px 31px calc((100% - 980px) * 0.5);left:641px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start}[data-mesh-id=SITE_FOOTERinlineContent]{height:auto;width:100%}[data-mesh-id=SITE_FOOTERinlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:auto;grid-template-rows:1fr;grid-template-columns:100%}[data-mesh-id=SITE_FOOTERinlineContent-gridContainer] > [id="comp-kxc599oj"]{position:relative;margin:15px 0px 15px calc((100% - 980px) * 0.5);left:370px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start}[data-mesh-id=comp-kxc599ojinlineContent]{height:auto;width:309px}[data-mesh-id=comp-kxc599ojinlineContent-gridContainer]{position:static;display:grid;height:auto;width:100%;min-height:auto;grid-template-rows:1fr;grid-template-columns:100%}[data-mesh-id=comp-kxc599ojinlineContent-gridContainer] > [id="comp-kx4suxqc"]{position:relative;margin:0px 0px 32px 0;left:0px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start}[data-mesh-id=comp-kxc599ojinlineContent-gridContainer] > [id="comp-kx4suxr2"]{position:relative;margin:6px 0px 0px 0;left:40px;grid-area:1 / 1 / 2 / 2;justify-self:start;align-self:start}#comp-kj8ccgxo{width:38px;height:33px}#comp-ifs9egkl{width:270px;height:21px}#DrpDwnMn0-jgk{width:279px;height:33px}#comp-kx4suxqc{width:38px;height:33px}#comp-kx4suxr2{width:269px;height:59px}#SITE_HEADER-placeholder{height:87px}#masterPage{left:0;margin-left:0;width:100%;min-width:980px}#SITE_HEADER{left:0;margin-left:0;width:100%;min-width:980px;z-index:50;--above-all-in-container:10000}#PAGES_CONTAINER{left:0;margin-left:0;width:100%;min-width:980px;--pinned-layer-in-container:51;--above-all-in-container:49}#SITE_FOOTER{left:0;margin-left:0;width:100%;min-width:980px;--pinned-layer-in-container:52;--above-all-in-container:49}#SITE_PAGES{left:0;margin-left:0;width:100%;min-width:980px}#comp-kxc599oj{width:309px}#masterPage.landingPage #SITE_HEADER{display:none}#masterPage.landingPage #SITE_FOOTER{display:none}#masterPage.landingPage #SITE_HEADER-placeholder{display:none}#masterPage.landingPage #SITE_FOOTER-placeholder{display:none}#masterPage:not(.landingPage) #PAGES_CONTAINER{margin-top:0px;margin-bottom:0px}
 	@font-face {
@@ -1092,29 +1117,6 @@ unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+
   			<canvas id="canvas" style="display: none;"></canvas>
 		</div>
 	</li>
-	
-	let cameraStream
-const camera = document.querySelector('#camera')
-const stop = document.querySelector('#stop')
-const video = document.querySelector('#video')
-
-const constraints = { audio: true, video: true }
-camera.addEventListener('click', () => {
-  navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-    cameraStream = stream
-    video.srcObject = stream
-    video.play()
-  })
-})
-
-stop.addEventListener('click', () => {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => {
-      track.stop()
-    })
-    cameraStream = null
-  }
-})
 	
 </ul></div></div></div></div><div id="comp-kx233i8z" class="_1KV2M"><div data-mesh-id="comp-kx233i8zinlineContent" data-testid="inline-content" class=""><div data-mesh-id="comp-kx233i8zinlineContent-gridContainer" data-testid="mesh-container-content"><div id="comp-kvxz8se6" class=""><div data-testid="svgRoot-comp-kvxz8se6" class="_3bLYT _2OIRR"><svg preserveAspectRatio="none" data-bbox="15.305 10.052 123 123" xmlns="http://www.w3.org/2000/svg" viewBox="15.305 10.052 123 123" role=presentation aria-hidden=true>
     <g>
