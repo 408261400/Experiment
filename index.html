@@ -41,7 +41,7 @@ stop.addEventListener('click', () => {
 
 <script>
 	const camera = document.querySelector('.camera');
-	camera.addEventListener('click', () => {
+	camera.addEventListener('click', function(){
 	// 開啟視訊鏡頭，瀏覽器會跳詢問視窗
 navigator.mediaDevices.getUserMedia({video: true}).then(function(stream){
   stream_obj = stream;         // 將串流物件放在 stream_obj 全域變數，方便後面關閉 webcam 時會用到
