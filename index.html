@@ -26,12 +26,12 @@
         }
         /* 容器設置16:9比例，寬高比例 = 874:492 */
         .film-container {
-            position: relative;
+             position: relative;
             width: 100%;
-            max-width: 874px; /* 設置最大寬度 */
-            padding-bottom: 60%; /* 492 ÷ 874 = 56.3% */
-            margin: auto;
+            max-width: 800px; /* 設定最大寬度 */
+            margin: auto; /* 置中 */
             overflow: hidden;
+            padding-top: 56.25%; /* 16:9 比例，(9/16)*100 = 56.25% */
         }
 
         /* 嵌入影片 iframe 設置 */
