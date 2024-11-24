@@ -42,6 +42,20 @@
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
     </div>
+
+    <h2>嵌入 YouTube 影片</h2>
+    <!-- 使用 iframe 嵌入影片 -->
+    <div style="max-width: 560px; margin: auto;">
+        <iframe 
+            width="560" 
+            height="315" 
+            src="https://www.youtube.com/embed/影片ID" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    </div>
     
     <script>
         const videoElement = document.getElementById("video");
