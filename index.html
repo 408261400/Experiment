@@ -17,8 +17,9 @@
             box-sizing: border-box;
         }
         video {
-            width: 1280px; /* 更新為 1280 像素寬度 */
-            height: 720px; /* 更新為 720 像素高度 */
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9; /* 設置為16:9比例 */
         }
         .buttons {
             text-align: center;
@@ -75,7 +76,7 @@
         const recordedVideo = document.getElementById("recordedVideo");
         const startButton = document.getElementById("startRecording");
         const stopButton = document.getElementById("stopRecording");
-        const downloadButton = document.getElementById("downloadRecording");
+        const downloadLink = document.getElementById("downloadRecording");
 
         let mediaRecorder;
         let recordedChunks = [];
@@ -85,7 +86,7 @@
         // 請求相機權限並顯示即時畫面
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = stream;
 
                 // 設置 MediaRecorder 來錄影
@@ -104,9 +105,9 @@
                     recordedVideo.src = videoURL;
 
                     // 啟用下載按鈕
-                    downloadButton.href = videoURL;
-                    downloadButton.download = "recording.webm";
-                    downloadButton.querySelector("button").disabled = false;
+                    downloadLink.href = videoURL;
+                    downloadLink.download = "recording.webm";
+                    downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
