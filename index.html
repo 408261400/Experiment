@@ -54,7 +54,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording.webm" disabled>
+        <a id="downloadRecording" href="#" download="recording-fixed.webm" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -70,6 +70,9 @@
         </iframe>
     </div>
     
+    <!-- ffmpeg.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.2/dist/ffmpeg.min.js"></script>
+
     <script>
         const videoElement = document.getElementById("video");
         const recordedVideo = document.getElementById("recordedVideo");
@@ -82,7 +85,10 @@
         let recordingTimer; // 記錄計時器
         const maxRecordingTime = 10 * 60 * 1000; // 10 分鐘 (以毫秒為單位)
 
-        // 請求相機權限並顯示即時畫面
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: true });
+
+        // 初始化相機
         async function startCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -99,9 +105,7 @@
 
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: "video/webm" });
-
-                    // 重建影片元數據
-                    const fixedBlob = await makeVideoSeekable(blob);
+                    const fixedBlob = await fixMetadata(blob);
 
                     const videoURL = URL.createObjectURL(fixedBlob);
                     recordedChunks = [];
@@ -109,7 +113,7 @@
 
                     // 啟用下載按鈕
                     downloadLink.href = videoURL;
-                    downloadLink.download = "recording.webm";
+                    downloadLink.download = "recording-fixed.webm";
                     downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
@@ -117,20 +121,21 @@
             }
         }
 
-        // 使用錄影的影片製作可跳轉版本
-        async function makeVideoSeekable(blob) {
-            return new Promise((resolve) => {
-                const fileReader = new FileReader();
-                fileReader.onload = async () => {
-                    const arrayBuffer = fileReader.result;
-                    const data = new Uint8Array(arrayBuffer);
+        // 修復影片元數據
+        async function fixMetadata(blob) {
+            if (!ffmpeg.isLoaded()) {
+                await ffmpeg.load();
+            }
+            const inputName = 'input.webm';
+            const outputName = 'output.webm';
 
-                    // 重建 WebM 檔案元數據
-                    const newBlob = new Blob([data], { type: "video/webm" });
-                    resolve(newBlob);
-                };
-                fileReader.readAsArrayBuffer(blob);
-            });
+            ffmpeg.FS('writeFile', inputName, await fetchFile(blob));
+
+            // 使用 ffmpeg 修復元數據
+            await ffmpeg.run('-i', inputName, '-c', 'copy', '-map', '0', outputName);
+
+            const data = ffmpeg.FS('readFile', outputName);
+            return new Blob([data.buffer], { type: 'video/webm' });
         }
 
         // 開始錄影
