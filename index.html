@@ -70,6 +70,9 @@
         </iframe>
     </div>
     
+    <!-- 載入 webm-writer 庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/webm-writer@0.3.0/dist/webm-writer.min.js"></script>
+
     <script>
         const videoElement = document.getElementById("video");
         const recordedVideo = document.getElementById("recordedVideo");
@@ -78,7 +81,7 @@
         const downloadLink = document.getElementById("downloadRecording");
 
         let mediaRecorder;
-        let recordedChunks = [];
+        let writer;
         let recordingTimer; // 記錄計時器
         const maxRecordingTime = 10 * 60 * 1000; // 10 分鐘 (以毫秒為單位)
 
@@ -88,20 +91,24 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = stream;
 
-                // 設置 MediaRecorder，使用支持自由跳轉的 MIME 類型
-                const options = { mimeType: "video/webm;codecs=vp8" }; // vp8 支援關鍵幀
-                mediaRecorder = new MediaRecorder(stream, options);
+                // 初始化 WebM Writer
+                writer = new WebMWriter({
+                    quality: 0.95, // 高品質
+                    fileWriter: null, // 使用內存儲存
+                });
+
+                // 設置 MediaRecorder，記錄數據並傳遞給 WebM Writer
+                mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
                 
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
+                        writer.addFrame(event.data);
                     }
                 };
 
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: "video/webm" });
-                    recordedChunks = [];
-                    const videoURL = URL.createObjectURL(blob);
+                mediaRecorder.onstop = async () => {
+                    const webmBlob = await writer.complete(); // 生成正確封裝的 WebM 文件
+                    const videoURL = URL.createObjectURL(webmBlob);
                     recordedVideo.src = videoURL;
 
                     // 啟用下載按鈕
@@ -116,7 +123,7 @@
 
         // 開始錄影
         startButton.addEventListener("click", () => {
-            recordedChunks = [];
+            writer = new WebMWriter({ quality: 0.95 }); // 重置 WebM Writer
             mediaRecorder.start();
             startButton.disabled = true;
             stopButton.disabled = false;
