@@ -54,7 +54,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording.webm" disabled>
+        <a id="downloadRecording" href="#" download="recording.mp4" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -69,7 +69,8 @@
             allowfullscreen>
         </iframe>
     </div>
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
     <script>
         const videoElement = document.getElementById("video");
         const recordedVideo = document.getElementById("recordedVideo");
@@ -85,20 +86,11 @@
         // 請求相機權限並顯示即時畫面
         async function startCamera() {
             try {
-                // 設定視頻流的解析度（例如：1920x1080）
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 1920 }, // 設置理想的解析度
-                        height: { ideal: 1080 }
-                    }
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = stream;
 
                 // 設置 MediaRecorder 來錄影
-                mediaRecorder = new MediaRecorder(stream, {
-                    videoBitsPerSecond: 2500000, // 設定錄製質量 (higher bits per second = better quality)
-                    mimeType: "video/webm; codecs=vp8" // 設定編碼格式為 VP8，這對於 WebM 格式很合適
-                });
+                mediaRecorder = new MediaRecorder(stream);
                 
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) {
@@ -106,20 +98,41 @@
                     }
                 };
 
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: "video/webm" });
+                mediaRecorder.onstop = async () => {
+                    const webmBlob = new Blob(recordedChunks, { type: "video/webm" });
                     recordedChunks = [];
-                    const videoURL = URL.createObjectURL(blob);
+                    const videoURL = URL.createObjectURL(webmBlob);
                     recordedVideo.src = videoURL;
 
+                    // 使用 ffmpeg.wasm 轉換格式為 mp4
+                    await convertWebMToMP4(webmBlob);
+
                     // 啟用下載按鈕
-                    downloadLink.href = videoURL;
-                    downloadLink.download = "recording.webm";
                     downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
             }
+        }
+
+        // 使用 ffmpeg.wasm 轉換 WebM 影片到 MP4
+        async function convertWebMToMP4(webmBlob) {
+            const { createFFmpeg, fetchFile } = FFmpeg;
+            const ffmpeg = createFFmpeg({ log: true });
+            await ffmpeg.load();
+
+            const webmFile = new File([webmBlob], 'video.webm');
+            ffmpeg.FS('writeFile', 'video.webm', await fetchFile(webmFile));
+
+            // 轉換格式為 mp4
+            await ffmpeg.run('-i', 'video.webm', 'output.mp4');
+
+            const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
+            const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+
+            // 設定下載連結
+            const mp4URL = URL.createObjectURL(mp4Blob);
+            downloadLink.href = mp4URL;
         }
 
         // 開始錄影
