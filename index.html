@@ -54,6 +54,9 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
+        <a id="downloadRecording" href="#" download="recording.webm" disabled>
+            <button disabled>下載錄影</button>
+        </a>
     </div>
 
     <h2>YouTube 影片</h2>
@@ -72,6 +75,7 @@
         const recordedVideo = document.getElementById("recordedVideo");
         const startButton = document.getElementById("startRecording");
         const stopButton = document.getElementById("stopRecording");
+        const downloadLink = document.getElementById("downloadRecording");
 
         let mediaRecorder;
         let recordedChunks = [];
@@ -98,6 +102,11 @@
                     recordedChunks = [];
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
+
+                    // 啟用下載按鈕
+                    downloadLink.href = videoURL;
+                    downloadLink.download = "recording.webm";
+                    downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
