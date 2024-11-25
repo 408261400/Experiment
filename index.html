@@ -75,6 +75,8 @@
 
         let mediaRecorder;
         let recordedChunks = [];
+        let recordingTimer; // 記錄計時器
+        const maxRecordingTime = 10 * 60 * 1000; // 10 分鐘 (以毫秒為單位)
 
         // 請求相機權限並顯示即時畫面
         async function startCamera() {
@@ -108,6 +110,14 @@
             mediaRecorder.start();
             startButton.disabled = true;
             stopButton.disabled = false;
+
+            // 設置錄影計時器，10 分鐘後自動停止錄影
+            recordingTimer = setTimeout(() => {
+                mediaRecorder.stop();
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                alert("錄影時間已達 10 分鐘，錄影已自動停止！");
+            }, maxRecordingTime);
         });
 
         // 停止錄影
@@ -115,6 +125,9 @@
             mediaRecorder.stop();
             startButton.disabled = false;
             stopButton.disabled = true;
+
+            // 清除計時器
+            clearTimeout(recordingTimer);
         });
 
         // 初始化
