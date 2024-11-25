@@ -88,10 +88,9 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = stream;
 
-                // 設置 MediaRecorder 來錄影
-                mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: "video/webm; codecs=vp8" // 設定錄影編碼格式
-                });
+                // 設置 MediaRecorder，使用支持自由跳轉的 MIME 類型
+                const options = { mimeType: "video/webm;codecs=vp8" }; // vp8 支援關鍵幀
+                mediaRecorder = new MediaRecorder(stream, options);
                 
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) {
@@ -100,8 +99,7 @@
                 };
 
                 mediaRecorder.onstop = () => {
-                    // 建立包含元數據的 Blob
-                    const blob = new Blob(recordedChunks, { type: "video/webm; codecs=vp8" });
+                    const blob = new Blob(recordedChunks, { type: "video/webm" });
                     recordedChunks = [];
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
