@@ -54,7 +54,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording-fixed.webm" disabled>
+        <a id="downloadRecording" href="#" download="recording.webm" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -70,9 +70,6 @@
         </iframe>
     </div>
     
-    <!-- ffmpeg.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.2/dist/ffmpeg.min.js"></script>
-
     <script>
         const videoElement = document.getElementById("video");
         const recordedVideo = document.getElementById("recordedVideo");
@@ -85,10 +82,7 @@
         let recordingTimer; // 記錄計時器
         const maxRecordingTime = 10 * 60 * 1000; // 10 分鐘 (以毫秒為單位)
 
-        const { createFFmpeg, fetchFile } = FFmpeg;
-        const ffmpeg = createFFmpeg({ log: true });
-
-        // 初始化相機
+        // 請求相機權限並顯示即時畫面
         async function startCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -103,39 +97,20 @@
                     }
                 };
 
-                mediaRecorder.onstop = async () => {
+                mediaRecorder.onstop = () => {
                     const blob = new Blob(recordedChunks, { type: "video/webm" });
-                    const fixedBlob = await fixMetadata(blob);
-
-                    const videoURL = URL.createObjectURL(fixedBlob);
                     recordedChunks = [];
+                    const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
 
                     // 啟用下載按鈕
                     downloadLink.href = videoURL;
-                    downloadLink.download = "recording-fixed.webm";
+                    downloadLink.download = "recording.webm";
                     downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
             }
-        }
-
-        // 修復影片元數據
-        async function fixMetadata(blob) {
-            if (!ffmpeg.isLoaded()) {
-                await ffmpeg.load();
-            }
-            const inputName = 'input.webm';
-            const outputName = 'output.webm';
-
-            ffmpeg.FS('writeFile', inputName, await fetchFile(blob));
-
-            // 使用 ffmpeg 修復元數據
-            await ffmpeg.run('-i', inputName, '-c', 'copy', '-map', '0', outputName);
-
-            const data = ffmpeg.FS('readFile', outputName);
-            return new Blob([data.buffer], { type: 'video/webm' });
         }
 
         // 開始錄影
