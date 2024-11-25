@@ -54,7 +54,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording.webm" disabled>
+        <a id="downloadRecording" href="#" download="recording.mp4" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -70,6 +70,7 @@
         </iframe>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script> <!-- 引入 ffmpeg.js -->
     <script>
         const videoElement = document.getElementById("video");
         const recordedVideo = document.getElementById("recordedVideo");
@@ -97,20 +98,42 @@
                     }
                 };
 
-                mediaRecorder.onstop = () => {
+                mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: "video/webm" });
                     recordedChunks = [];
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
 
+                    // 轉換 WebM 為 MP4
+                    const mp4Blob = await convertWebMToMP4(blob);
+
                     // 啟用下載按鈕
-                    downloadLink.href = videoURL;
-                    downloadLink.download = "recording.webm";
+                    const mp4URL = URL.createObjectURL(mp4Blob);
+                    downloadLink.href = mp4URL;
+                    downloadLink.download = "recording.mp4";
                     downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
             }
+        }
+
+        // WebM 轉換為 MP4
+        async function convertWebMToMP4(webmBlob) {
+            const ffmpeg = createFFmpeg({ log: true });
+            await ffmpeg.load();
+
+            // 將 WebM Blob 載入 ffmpeg
+            const fileName = 'recording.webm';
+            ffmpeg.FS('writeFile', fileName, new Uint8Array(await webmBlob.arrayBuffer()));
+
+            // 執行轉換命令
+            await ffmpeg.run('-i', fileName, 'output.mp4');
+
+            // 取得轉換後的 MP4 檔案
+            const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
+            const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+            return mp4Blob;
         }
 
         // 開始錄影
