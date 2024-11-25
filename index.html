@@ -54,7 +54,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording.mp4" disabled>
+        <a id="downloadRecording" href="#" download="recording.webm" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -69,9 +69,6 @@
             allowfullscreen>
         </iframe>
     </div>
-
-    <!-- 引入 FFmpeg.js  -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
     
     <script>
         const videoElement = document.getElementById("video");
@@ -100,26 +97,16 @@
                     }
                 };
 
-                mediaRecorder.onstop = async () => {
+                mediaRecorder.onstop = () => {
                     const blob = new Blob(recordedChunks, { type: "video/webm" });
                     recordedChunks = [];
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
 
-                    // 使用 FFmpeg.js 進行轉換
-                    const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-                    await ffmpeg.load();
-                    await ffmpeg.FS('writeFile', 'input.webm', new Uint8Array(await blob.arrayBuffer()));
-                    await ffmpeg.run('-i', 'input.webm', 'output.mp4');
-
-                    const mp4Data = ffmpeg.FS('readFile', 'output.mp4');
-                    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
-
-                    // 更新下載鏈接
-                    const mp4URL = URL.createObjectURL(mp4Blob);
-                    downloadLink.href = mp4URL;
-                    downloadLink.download = 'recording.mp4';
-                    downloadLink.querySelector('button').disabled = false;
+                    // 啟用下載按鈕
+                    downloadLink.href = videoURL;
+                    downloadLink.download = "recording.webm";
+                    downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
