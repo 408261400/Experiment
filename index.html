@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>說話平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script>
     <style>
         .container {
             display: flex;
@@ -54,7 +55,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording.webm" disabled>
+        <a id="downloadRecording" href="#" download="recording.mp4" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -103,8 +104,20 @@
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
 
-                     // 啟用下載按鈕
-                    downloadButton.href = videoURL;
+                     // 使用 FFmpeg 轉碼為 MP4
+                    const { createFFmpeg, fetchFile } = FFmpeg;
+                    const ffmpeg = createFFmpeg({ log: true });
+                    await ffmpeg.load();
+                    ffmpeg.FS('writeFile', 'recording.webm', await fetchFile(blob));
+                    await ffmpeg.run('-i', 'recording.webm', 'recording.mp4');
+                    const mp4Data = ffmpeg.FS('readFile', 'recording.mp4');
+
+                    // 將 MP4 文件轉為 Blob
+                    const mp4Blob = new Blob([mp4Data.buffer], { type: 'video/mp4' });
+                    const mp4URL = URL.createObjectURL(mp4Blob);
+
+                    // 啟用下載按鈕
+                    downloadButton.href = mp4URL;
                     downloadButton.download = "recording.mp4";
                     downloadButton.querySelector("button").disabled = false;
                 };
