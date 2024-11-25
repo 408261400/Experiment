@@ -54,7 +54,7 @@
     <div class="buttons">
         <button id="startRecording">開始錄影</button>
         <button id="stopRecording" disabled>停止錄影</button>
-        <a id="downloadRecording" href="#" download="recording.webm" disabled>
+        <a id="downloadRecording" href="#" download="recording.mp4" disabled>
             <button disabled>下載錄影</button>
         </a>
     </div>
@@ -103,9 +103,9 @@
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
 
-                    // 啟用下載按鈕
+                    // 啟用下載按鈕，並改為 MP4 格式下載
                     downloadLink.href = videoURL;
-                    downloadLink.download = "recording.webm";
+                    downloadLink.download = "recording.mp4"; // 即便是 webm 格式，擴展名是 mp4
                     downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
