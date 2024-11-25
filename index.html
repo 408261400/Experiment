@@ -17,8 +17,8 @@
             box-sizing: border-box;
         }
         video {
-            width: 100%;
-            height: 500px;
+            width: 1280px; /* 更新為 1280 像素寬度 */
+            height: 720px; /* 更新為 720 像素高度 */
         }
         .buttons {
             text-align: center;
@@ -85,7 +85,7 @@
         // 請求相機權限並顯示即時畫面
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
                 videoElement.srcObject = stream;
 
                 // 設置 MediaRecorder 來錄影
