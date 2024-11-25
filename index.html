@@ -76,7 +76,7 @@
         const recordedVideo = document.getElementById("recordedVideo");
         const startButton = document.getElementById("startRecording");
         const stopButton = document.getElementById("stopRecording");
-        const downloadButton = document.getElementById("downloadRecording");
+        const downloadLink = document.getElementById("downloadRecording");
 
         let mediaRecorder;
         let recordedChunks = [];
@@ -117,9 +117,9 @@
                     const mp4URL = URL.createObjectURL(mp4Blob);
 
                     // 啟用下載按鈕
-                    downloadButton.href = mp4URL;
-                    downloadButton.download = "recording.mp4";
-                    downloadButton.querySelector("button").disabled = false;
+                    downloadLink.href = mp4URL;
+                    downloadLink.download = "recording.mp4";
+                    downloadLink.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
