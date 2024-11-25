@@ -98,13 +98,13 @@
                     }
                 };
 
-                mediaRecorder.onstop = () => {
+                mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: "video/webm" });
                     recordedChunks = [];
                     const videoURL = URL.createObjectURL(blob);
                     recordedVideo.src = videoURL;
 
-                     // 使用 FFmpeg 轉碼為 MP4
+                    // 使用 FFmpeg 轉碼為 MP4
                     const { createFFmpeg, fetchFile } = FFmpeg;
                     const ffmpeg = createFFmpeg({ log: true });
                     await ffmpeg.load();
