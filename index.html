@@ -26,6 +26,19 @@
             text-align: center;
             margin-top: 20px;
         }
+        /* 容器設置16:9比例，寬高比例 = 874:492 */
+        .film-container {
+            position: relative;
+            width: 100%;
+            max-width: 874px; /* 限制最大寬度 */
+            margin: auto;
+        }
+
+        /* 嵌入影片 iframe 設置 */
+        .film-container iframe {
+            width: 100%;
+            height: 492px;
+        }
         .overlay {
             position: fixed;
             top: 50%;
@@ -62,8 +75,19 @@
         </a>
     </div>
 
+    <h2>YouTube 影片</h2>
+    <!-- 使用 iframe 嵌入影片 -->
+    <div class="film-container">
+        <iframe 
+            src="https://www.youtube.com/embed/-7AEM0lMcUc" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    </div>
+    
     <div id="overlay" class="overlay"></div>
-
+    
     <script>
         const videoElement = document.getElementById("video");
         const recordedVideo = document.getElementById("recordedVideo");
@@ -78,7 +102,7 @@
         let questionTimers = []; // 問題顯示計時器
         const maxRecordingTime = 10 * 60 * 1000; // 10 分鐘 (以毫秒為單位)
 
-        const questions = [
+         const questions = [
             { time: 3 * 60 * 1000, text: "問題一：請分享您今天的目標是什麼？" },
             { time: 5 * 60 * 1000, text: "問題二：您目前最大的挑戰是什麼？" },
             { time: 8 * 60 * 1000, text: "問題三：接下來您有什麼計畫？" }
@@ -104,7 +128,7 @@
 
                 // 設置 MediaRecorder 來錄影
                 mediaRecorder = new MediaRecorder(stream);
-
+                
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) {
                         recordedChunks.push(event.data);
