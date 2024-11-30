@@ -51,11 +51,7 @@
             text-align: center;
             border-radius: 8px;
             display: none;
-            z-index: 10000; /* 確保在全螢幕時顯示 */
-        }
-        :fullscreen .overlay,
-        :-webkit-full-screen .overlay {
-            font-size: 32px; /* 放大文字適應全螢幕 */
+            z-index: 1000;
         }
     </style>
 </head>
@@ -82,8 +78,7 @@
     <h2>YouTube 影片</h2>
     <!-- 使用 iframe 嵌入影片 -->
     <div class="film-container">
-        <iframe 
-            id="youtubeIframe"
+        <iframe
             src="https://www.youtube.com/embed/-7AEM0lMcUc" 
             title="YouTube video player" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -188,15 +183,6 @@
             clearTimeout(recordingTimer);
             questionTimers.forEach((timer) => clearTimeout(timer));
             questionTimers = [];
-        });
-
-        // 監聽全螢幕事件，調整 overlay 的 z-index
-        document.addEventListener("fullscreenchange", () => {
-            if (document.fullscreenElement) {
-                overlay.style.zIndex = "10000"; // 確保 overlay 顯示在最上層
-            } else {
-                overlay.style.zIndex = "1000"; // 恢復預設值
-            }
         });
 
         // 初始化
