@@ -93,7 +93,7 @@
         const recordedVideo = document.getElementById("recordedVideo");
         const startButton = document.getElementById("startRecording");
         const stopButton = document.getElementById("stopRecording");
-        const downloadLink = document.getElementById("downloadRecording");
+        const downloadButton = document.getElementById("downloadRecording");
         const overlay = document.getElementById("overlay");
 
         let mediaRecorder;
@@ -115,7 +115,7 @@
 
             setTimeout(() => {
                 overlay.style.display = "none";
-            }, 20000); // 20 秒後隱藏
+            }, 15000); // 15 秒後隱藏
         }
 
         // 請求相機權限並顯示即時畫面
@@ -142,9 +142,9 @@
                     recordedVideo.src = videoURL;
 
                     // 啟用下載按鈕
-                    downloadLink.href = videoURL;
-                    downloadLink.download = "recording.webm";
-                    downloadLink.querySelector("button").disabled = false;
+                    downloadButton.href = videoURL;
+                    downloadButton.download = "recording.webm";
+                    downloadButton.querySelector("button").disabled = false;
                 };
             } catch (error) {
                 console.error("無法訪問相機:", error);
