@@ -51,11 +51,11 @@
             text-align: center;
             border-radius: 8px;
             display: none;
-            z-index: 1000;
+            z-index: 10000; /* 確保在全螢幕時顯示 */
         }
-        /* 全螢幕模式下調整 overlay */
-        :fullscreen .overlay, :-webkit-full-screen .overlay {
-            font-size: 32px; /* 適應全螢幕的文字大小 */
+        :fullscreen .overlay,
+        :-webkit-full-screen .overlay {
+            font-size: 32px; /* 放大文字適應全螢幕 */
         }
     </style>
 </head>
@@ -190,12 +190,12 @@
             questionTimers = [];
         });
 
-        // 全螢幕事件監聽
+        // 監聽全螢幕事件，調整 overlay 的 z-index
         document.addEventListener("fullscreenchange", () => {
             if (document.fullscreenElement) {
-                overlay.style.zIndex = "10000"; // 提升 overlay 的優先級
+                overlay.style.zIndex = "10000"; // 確保 overlay 顯示在最上層
             } else {
-                overlay.style.zIndex = "1000"; // 恢復預設優先級
+                overlay.style.zIndex = "1000"; // 恢復預設值
             }
         });
 
