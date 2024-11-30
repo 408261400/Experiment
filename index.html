@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -53,13 +54,9 @@
             display: none;
             z-index: 1000;
         }
-        /* 全螢幕模式調整 */
-        :fullscreen .overlay {
-            font-size: 32px; /* 放大文字大小以適應全螢幕 */
-        }
-        /* 適應 Webkit 瀏覽器的全螢幕 */
-        :-webkit-full-screen .overlay {
-            font-size: 32px;
+        /* 全螢幕模式下調整 overlay */
+        :fullscreen .overlay, :-webkit-full-screen .overlay {
+            font-size: 32px; /* 適應全螢幕的文字大小 */
         }
     </style>
 </head>
@@ -194,10 +191,10 @@
             questionTimers = [];
         });
 
-        // 全螢幕支援調整
+        // 全螢幕事件監聽
         document.addEventListener("fullscreenchange", () => {
             if (document.fullscreenElement) {
-                overlay.style.zIndex = "10000"; // 提升 overlay 優先級
+                overlay.style.zIndex = "10000"; // 提升 overlay 的優先級
             } else {
                 overlay.style.zIndex = "1000"; // 恢復預設優先級
             }
