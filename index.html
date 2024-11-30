@@ -29,7 +29,7 @@
         .film-container {
             position: relative;
             width: 100%;
-            max-width: 874px;
+            max-width: 874px; /* 限制最大寬度 */
             margin: auto;
         }
 
@@ -38,6 +38,7 @@
             height: 492px;
         }
 
+        /* 問題顯示的 overlay */
         .overlay {
             position: fixed;
             top: 50%;
@@ -51,7 +52,16 @@
             border-radius: 8px;
             display: none;
             z-index: 1000;
-            pointer-events: none; /* 確保不會干擾點擊操作 */
+        }
+
+        /* 全螢幕模式調整 */
+        :fullscreen .overlay {
+            font-size: 32px; /* 放大文字大小以適應全螢幕 */
+        }
+
+        /* 適應 Webkit 瀏覽器的全螢幕 */
+        :-webkit-full-screen .overlay {
+            font-size: 32px;
         }
     </style>
 </head>
@@ -78,104 +88,60 @@
     <h2>YouTube 影片</h2>
     <div class="film-container">
         <iframe 
+            id="youtubeIframe"
             src="https://www.youtube.com/embed/-7AEM0lMcUc" 
             title="YouTube video player" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
         </iframe>
     </div>
-    
+
     <div id="overlay" class="overlay"></div>
     
     <script>
-        const videoElement = document.getElementById("video");
-        const recordedVideo = document.getElementById("recordedVideo");
-        const startButton = document.getElementById("startRecording");
-        const stopButton = document.getElementById("stopRecording");
-        const downloadButton = document.getElementById("downloadRecording");
         const overlay = document.getElementById("overlay");
-
-        let mediaRecorder;
-        let recordedChunks = [];
-        let recordingTimer;
-        let questionTimers = [];
-        const maxRecordingTime = 10 * 60 * 1000;
-
         const questions = [
             { time: 3 * 60 * 1000, text: "問題一：請分享您今天的目標是什麼？" },
             { time: 5 * 60 * 1000, text: "問題二：您目前最大的挑戰是什麼？" },
             { time: 8 * 60 * 1000, text: "問題三：接下來您有什麼計畫？" }
         ];
+        let questionTimers = [];
 
+        // 顯示問題的函數
         function showQuestion(question) {
             overlay.textContent = question.text;
             overlay.style.display = "block";
 
             setTimeout(() => {
                 overlay.style.display = "none";
-            }, 15000);
+            }, 15000); // 15 秒後隱藏
         }
 
-        async function startCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 1280, height: 720 }
-                });
-                videoElement.srcObject = stream;
-
-                mediaRecorder = new MediaRecorder(stream);
-                
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: "video/webm" });
-                    recordedChunks = [];
-                    const videoURL = URL.createObjectURL(blob);
-                    recordedVideo.src = videoURL;
-
-                    downloadButton.href = videoURL;
-                    downloadButton.download = "recording.webm";
-                    downloadButton.querySelector("button").disabled = false;
-                };
-            } catch (error) {
-                console.error("無法訪問相機:", error);
-            }
-        }
-
-        startButton.addEventListener("click", () => {
-            recordedChunks = [];
-            mediaRecorder.start();
-            startButton.disabled = true;
-            stopButton.disabled = false;
-
-            recordingTimer = setTimeout(() => {
-                mediaRecorder.stop();
-                startButton.disabled = false;
-                stopButton.disabled = true;
-                alert("錄影時間已達 10 分鐘，錄影已自動停止！");
-            }, maxRecordingTime);
-
+        // 啟動問題顯示的計時器
+        function startQuestionTimers() {
             questions.forEach((question) => {
                 const timer = setTimeout(() => showQuestion(question), question.time);
                 questionTimers.push(timer);
             });
-        });
+        }
 
-        stopButton.addEventListener("click", () => {
-            mediaRecorder.stop();
-            startButton.disabled = false;
-            stopButton.disabled = true;
-
-            clearTimeout(recordingTimer);
+        // 清除所有問題顯示的計時器
+        function clearQuestionTimers() {
             questionTimers.forEach((timer) => clearTimeout(timer));
             questionTimers = [];
+        }
+
+        // 全螢幕支援調整
+        document.addEventListener("fullscreenchange", () => {
+            if (document.fullscreenElement) {
+                overlay.style.zIndex = "10000"; // 提升 overlay 優先級
+            } else {
+                overlay.style.zIndex = "1000"; // 恢復預設優先級
+            }
         });
 
-        startCamera();
+        // 初始化
+        startQuestionTimers();
     </script>
 </body>
 </html>
